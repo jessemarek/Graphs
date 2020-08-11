@@ -180,7 +180,34 @@ class Graph:
 
         This should be done using recursion.
         """
-        pass  # TODO
+        # keep track of visited verts
+        visited = set()
+        # store the target path
+        target_path = None
+
+        def find_path(path):
+            # cur vert at end of path
+            vertex = path[-1]
+            nonlocal target_path
+            nonlocal visited
+            # if vert is not yet visited
+            if vertex not in visited:
+                # mark vert as visited
+                visited.add(vertex)
+                # check to see if vert is our destination
+                if vertex == destination_vertex:
+                    # if it is set the target path to the path
+                    target_path = path
+                else:
+                    # otherwise keep searching other verts
+                    for v in self.vertices[vertex]:
+                        new_path = path.copy()
+                        new_path.append(v)
+                        find_path(new_path)
+        # recursively search for target path
+        find_path([starting_vertex])
+
+        return target_path
 
 
 if __name__ == '__main__':
