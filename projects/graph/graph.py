@@ -6,7 +6,8 @@ from util import Stack, Queue  # These may come in handy
 
 class Graph:
 
-    """Represent a graph as a dictionary of vertices mapping labels to edges."""
+    """Represent a graph as a dictionary of vertices mapping labels to
+    edges."""
 
     def __init__(self):
         self.vertices = {}
@@ -82,13 +83,15 @@ class Graph:
                 for neighbor in self.get_neighbors(v):
                     s.push(neighbor)
 
-    def dft_recursive(self, starting_vertex, visited=set()):
+    def dft_recursive(self, starting_vertex, visited=None):
         """
         Print each vertex in depth-first order
         beginning from starting_vertex.
 
         This should be done using recursion.
         """
+        if visited is None:
+            visited = set()
         # print the vert when we visit
         print(starting_vertex)
         # add the vert to the visited set
@@ -172,13 +175,40 @@ class Graph:
                 # ADD the new path to the stack
                 s.push(path)
 
-    def dfs_recursive(self, starting_vertex, destination_vertex):
+    def dfs_recursive(self, starting_vertex, destination_vertex, visited=None, path=None):
         """
         Return a list containing a path from
         starting_vertex to destination_vertex in
         depth-first order.
 
         This should be done using recursion.
+        """
+        # keep track of visited verts
+        if visited is None:
+            visited = set()
+        # store the target path
+        if path is None:
+            path = []
+        # mark the current vert as visited
+        visited.add(starting_vertex)
+        # copy the path and add the current vert to the end
+        path = path[:]
+        path.append(starting_vertex)
+        # check if we are at the destination vert
+        if starting_vertex == destination_vertex:
+            return path
+        # we need to keep searching, visit the neighbors of the vert
+        for n in self.get_neighbors(starting_vertex):
+            if n not in visited:
+                # store the next recursive call as a new path
+                new_path = self.dfs_recursive(
+                    n, destination_vertex, visited, path)
+                # if we don't find a deadend return the path to the prev call
+                if new_path is not None:
+                    return new_path
+        # deadend and no target found, return None
+        return None
+
         """
         # keep track of visited verts
         visited = set()
@@ -208,6 +238,7 @@ class Graph:
         find_path([starting_vertex])
 
         return target_path
+        """
 
 
 if __name__ == '__main__':
