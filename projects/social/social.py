@@ -1,4 +1,5 @@
 import random
+from util import Queue
 
 
 class User:
@@ -76,6 +77,32 @@ class SocialGraph:
         """
         visited = {}  # Note that this is a dictionary, not a set
         # !!!! IMPLEMENT ME
+
+        # create a queue to store the path we have traversed
+        q = Queue()
+        # init the queue with user id
+        q.enqueue([user_id])
+
+        # create the path through each users friend network
+        while q.size() > 0:
+            # path from starting point to cur user
+            path = q.dequeue()
+            # current user is at end of path
+            user = path[-1]
+
+            # if we haven't already visited this friend
+            if user not in visited:
+                # mark as visited with the path to get here
+                visited[user] = path
+
+                # look at this users friends to find friends of friends
+                for friend in self.friendships[user]:
+                    # create a new path to the firends of friends
+                    new_path = path[:]
+                    new_path.append(friend)
+                    # add the new path to the queue to track the next degree of separation
+                    q.enqueue(new_path)
+
         return visited
 
 
@@ -85,4 +112,3 @@ if __name__ == '__main__':
     print(sg.friendships)
     connections = sg.get_all_social_paths(1)
     print(connections)
-    print(sg.users)
