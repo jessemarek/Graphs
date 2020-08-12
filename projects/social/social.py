@@ -103,12 +103,27 @@ class SocialGraph:
                     # add the new path to the queue to track the next degree of separation
                     q.enqueue(new_path)
 
+        # used the following to determine the answers to questions in section #3 of README.md
+        # deg_sep = []
+        # num_ext_f = []
+        # for k, v in visited.items():
+        #     visited[k] = len(v) - 1
+        #     deg_sep.append(visited[k])
+        #     num_ext_f.append(k)
+
+        # num_ext_f = len(num_ext_f) - 1
+
+        # print(
+        #     f"Average Degree of Separation: {sum(deg_sep)//(len(deg_sep)-1)}")
+
+        # print(f"Num of extended friends: {num_ext_f}")
+
         return visited
 
 
 if __name__ == '__main__':
     sg = SocialGraph()
-    sg.populate_graph(10, 2)
+    sg.populate_graph(1000, 5)
     print(sg.friendships)
     connections = sg.get_all_social_paths(1)
     print(connections)
