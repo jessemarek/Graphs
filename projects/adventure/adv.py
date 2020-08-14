@@ -90,12 +90,10 @@ def traverse_maze():
     prev_room = None
     dir_moved = None
     backtracked = False
-    # init the list to hold the path through rooms
-    path = []
     # create a stack to keep track of our path
     s = Stack()
     # init stack with the path
-    s.push(path)
+    s.push('n')
 
     while s.size() > 0:
         # get the current room
@@ -149,17 +147,15 @@ def traverse_maze():
 
         # grab the path off the top of the stack
         path = s.pop()
-        # check to see if the path has directions
-        if len(path) > 0:
-            # store current room as the prev room
-            # (it will be prev after travel)
-            prev_room = player.current_room.id
-            # get direction of travel
-            dir_moved = direction = path[0]
-            # move one room in direction
-            player.travel(direction)
-            # record movement in traversal path
-            traversal_path.append(direction)
+        # store current room as the prev room
+        # (it will be prev after travel)
+        prev_room = player.current_room.id
+        # get direction of travel
+        dir_moved = direction = path[0]
+        # move one room in direction
+        player.travel(direction)
+        # record movement in traversal path
+        traversal_path.append(direction)
 
 
 traverse_maze()
