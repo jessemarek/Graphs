@@ -15,8 +15,8 @@ world = World()
 # map_file = "maps/test_line.txt"
 # map_file = "maps/test_cross.txt"
 # map_file = "maps/test_loop.txt"
-map_file = "maps/test_loop_fork.txt"
-# map_file = "maps/main_maze.txt"
+# map_file = "maps/test_loop_fork.txt"
+map_file = "maps/main_maze.txt"
 
 # Loads the map into a dictionary
 room_graph = literal_eval(open(map_file, "r").read())
@@ -60,20 +60,20 @@ def get_path(start):
         # get the last room in the path to check adjacent rooms
         last = path[-1]
         # if we haven't visited this room yet
-        if last not in visited:
-            # check to see if its a room with unexplored exits
-            if '?' in maze_map[last].values():
-                # if it is then we need to convert the rooms in the path
-                # to directions to travel in order to get there
-                for i in range(len(path)-1):
-                    for k, v in maze_map[path[i]].items():
-                        if v == path[i+1]:
-                            route.append(k)
-                # return the path
-                return route
+        if last in visited:
+            continue
+        # check to see if its a room with unexplored exits
+        if '?' in maze_map[last].values():
+            # if it is then we need to convert the rooms in the path
+            # to directions to travel in order to get there
+            for i in range(len(path)-1):
+                for k, v in maze_map[path[i]].items():
+                    if v == path[i+1]:
+                        route.append(k)
+            # return the path
+            return route
         # mark room as visited
         visited.add(last)
-
         # look at the current room and add any explored neighbors to the search
         for k, v in maze_map[last].items():
             # copy the current path up to this point
