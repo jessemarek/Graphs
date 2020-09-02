@@ -1,6 +1,11 @@
+import random
+from util import Queue
+
+
 class User:
     def __init__(self, name):
         self.name = name
+
 
 class SocialGraph:
     def __init__(self):
@@ -45,8 +50,21 @@ class SocialGraph:
         # !!!! IMPLEMENT ME
 
         # Add users
+        for i in range(num_users):
+            self.add_user(f"User {i}")
 
         # Create friendships
+        possible = []
+
+        for user_id in self.users:
+            for friend_id in range(user_id + 1, self.last_id + 1):
+                possible.append((user_id, friend_id))
+
+        random.shuffle(possible)
+
+        for i in range(num_users * avg_friendships // 2):
+            friendships = possible[i]
+            self.add_friendship(friendships[0], friendships[1])
 
     def get_all_social_paths(self, user_id):
         """
@@ -59,12 +77,53 @@ class SocialGraph:
         """
         visited = {}  # Note that this is a dictionary, not a set
         # !!!! IMPLEMENT ME
+
+        # create a queue to store the path we have traversed
+        q = Queue()
+        # init the queue with user id
+        q.enqueue([user_id])
+
+        # create the path through each users friend network
+        while q.size() > 0:
+            # path from starting point to cur user
+            path = q.dequeue()
+            # current user is at end of path
+            user = path[-1]
+
+            # if we haven't already visited this friend
+            if user not in visited:
+                # mark as visited with the path to get here
+                visited[user] = path
+
+                # look at this users friends to find friends of friends
+                for friend in self.friendships[user]:
+                    # create a new path to the firends of friends
+                    new_path = path[:]
+                    new_path.append(friend)
+                    # add the new path to the queue to track the next degree of separation
+                    q.enqueue(new_path)
+
+        # used the following to determine the answers to questions in section #3 of README.md
+        # deg_sep = []
+        # num_ext_f = []
+        # for k, v in visited.items():
+        #     visited[k] = len(v) - 1
+        #     deg_sep.append(visited[k])
+        #     num_ext_f.append(k)
+
+        # num_ext_f = len(num_ext_f) - 1
+
+        # print(
+        #     f"Average Degree of Separation: {sum(deg_sep)//(len(deg_sep)-1)}")
+
+        # print(f"Num of extended friends: {num_ext_f}")
+
         return visited
 
 
 if __name__ == '__main__':
     sg = SocialGraph()
-    sg.populate_graph(10, 2)
+    sg.populate_graph(1000, 5)
     print(sg.friendships)
     connections = sg.get_all_social_paths(1)
     print(connections)
